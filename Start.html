@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HealthCover wellness website">
+    <title>HealthCover</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="module">
+        import React from "https://esm.sh/react@19";
+        import { createRoot } from "https://esm.sh/react-dom/client";
+
+        const TopBar = () => React.createElement(
+            "header",
+            { className: "top-bar" },
+            React.createElement(
+                "a",
+                { className: "brand", href: "#" },
+                React.createElement("span", { className: "brand-mark" }, "H"),
+                React.createElement("span", null, "HealthCover")
+            ),
+            React.createElement(
+                "nav",
+                { className: "nav-links", "aria-label": "Primary navigation" },
+                React.createElement("a", { href: "#services" }, "Services"),
+                React.createElement("a", { href: "#about" }, "About"),
+                React.createElement("a", { href: "#contact" }, "Contact")
+            ),
+            React.createElement(
+                "a",
+                { className: "nav-cta", href: "#contact" },
+                "Book a visit"
+            )
+        );
+
+        const App = () => React.createElement(
+            React.Fragment,
+            null,
+            React.createElement(TopBar),
+            React.createElement(
+                "main",
+                { className: "page-content" },
+                React.createElement("h1", null, "Care that fits your life."),
+                React.createElement(
+                    "p",
+                    null,
+                    "Simple, supportive health care for every stage of life."
+                )
+            )
+        );
+
+        createRoot(document.getElementById("root")).render(
+            React.createElement(App)
+        );
+    </script>
+</body>
+</html>
