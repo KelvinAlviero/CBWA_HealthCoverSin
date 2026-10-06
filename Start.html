@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HealthCover wellness website">
-    <title>HealthCover</title>
+    <title>HC_QuoteSystem</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,22 +20,104 @@
             React.createElement(
                 "a",
                 { className: "brand", href: "#" },
-                React.createElement("span", { className: "brand-mark" }, "H"),
-                React.createElement("span", null, "HealthCover")
-            ),
-            React.createElement(
-                "nav",
-                { className: "nav-links", "aria-label": "Primary navigation" },
-                React.createElement("a", { href: "#services" }, "Services"),
-                React.createElement("a", { href: "#about" }, "About"),
-                React.createElement("a", { href: "#contact" }, "Contact")
-            ),
-            React.createElement(
-                "a",
-                { className: "nav-cta", href: "#contact" },
-                "Book a visit"
+                React.createElement("span", null, "QuoteSystem")
             )
         );
+
+        const QuoteSystem = () => {
+            const [quotes, setQuotes] = React.useState([
+                { id: 1, name: "Rayan" },
+                { id: 2, name: "Brandiddy" },
+                { id: 3, name: "Jose Gose" }
+            ]);
+            const [name, setName] = React.useState("");
+            const [isFormOpen, setIsFormOpen] = React.useState(false);
+
+            const addQuote = (event) => {
+                event.preventDefault();
+                const trimmedName = name.trim();
+
+                if (!trimmedName) return;
+
+                setQuotes((currentQuotes) => [
+                    ...currentQuotes,
+                    { id: Date.now(), name: trimmedName }
+                ]);
+                setName("");
+                setIsFormOpen(false);
+            };
+
+            return React.createElement(
+                "section",
+                { className: "quotes-section", id: "quotes" },
+                React.createElement(
+                    "div",
+                    { className: "section-heading" },
+                    React.createElement(
+                        "div",
+                        null,
+                        React.createElement("h2", null, "Customer quotes")
+                    ),
+                    React.createElement(
+                        "button",
+                        {
+                            className: "add-quote-button",
+                            type: "button",
+                            onClick: () => setIsFormOpen((open) => !open)
+                        },
+                        "Add quote"
+                    )
+                ),
+                isFormOpen && React.createElement(
+                    "form",
+                    { className: "quote-form", onSubmit: addQuote },
+                    React.createElement(
+                        "label",
+                        { htmlFor: "quote-name" },
+                        "Name"
+                    ),
+                    React.createElement("input", {
+                        id: "quote-name",
+                        type: "text",
+                        value: name,
+                        onChange: (event) => setName(event.target.value),
+                        placeholder: "Enter a name",
+                        autoFocus: true
+                    }),
+                    React.createElement(
+                        "button",
+                        { className: "save-button", type: "submit" },
+                        "Save quote"
+                    )
+                ),
+                React.createElement(
+                    "div",
+                    { className: "table-wrap" },
+                    React.createElement(
+                        "table",
+                        { className: "quote-table" },
+                        React.createElement(
+                            "thead",
+                            null,
+                            React.createElement(
+                                "tr",
+                                null,
+                                React.createElement("th", null, "Name")
+                            )
+                        ),
+                        React.createElement(
+                            "tbody",
+                            null,
+                            quotes.map((quote) => React.createElement(
+                                "tr",
+                                { key: quote.id },
+                                React.createElement("td", null, quote.name)
+                            ))
+                        )
+                    )
+                )
+            );
+        };
 
         const App = () => React.createElement(
             React.Fragment,
@@ -44,12 +126,7 @@
             React.createElement(
                 "main",
                 { className: "page-content" },
-                React.createElement("h1", null, "Care that fits your life."),
-                React.createElement(
-                    "p",
-                    null,
-                    "Simple, supportive health care for every stage of life."
-                )
+                React.createElement(QuoteSystem)
             )
         );
 
