@@ -55,6 +55,7 @@ export function calculateQuotePremium(input) {
       age,
       history: applicant.history,
       loading,
+      loadingPct: loading * 100,
       price: unitPrice * (1 + loading)
     };
   });

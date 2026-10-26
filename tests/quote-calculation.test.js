@@ -33,6 +33,30 @@ test("applies loading only when history is No and age is above 30", () => {
   assert.equal(getLhcLoading(40, "No", "None"), 0);
 });
 
+test("returns applicant-level LHC loading percentages", () => {
+  const age40Date = new Date();
+  age40Date.setFullYear(age40Date.getFullYear() - 40);
+  const age40Input = `${String(age40Date.getDate()).padStart(2, "0")}/${String(age40Date.getMonth() + 1).padStart(2, "0")}/${age40Date.getFullYear()}`;
+  const premium = calculateQuotePremium({
+    coverType: "Single",
+    applicant1Age: age40Input,
+    applicant2Age: "",
+    applicant3Age: "",
+    applicant4Age: "",
+    applicant1History: "No",
+    applicant2History: "",
+    applicant3History: "",
+    applicant4History: "",
+    hospitalCoverLevel: "Gold",
+    extraCoverLevel: "None",
+    paymentFrequency: "Monthly",
+    annualDiscountPct: 0
+  });
+
+  assert.equal(premium.hospitalRows[0].loadingPct, 20);
+  assert.equal(premium.hospitalRows[0].loading, 0.2);
+});
+
 test("applies the ten percent yearly discount", () => {
   const premium = calculateQuotePremium({
     coverType: "Single",

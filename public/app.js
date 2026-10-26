@@ -136,6 +136,7 @@ const ApplicantField = (label, number, form, update, errors, coverType) => {
 
 const PriceBreakdown = ({ premium, form }) => {
   const warnings = premium.unknownHistoryApplicants.map((applicant) => `Applicant ${applicant}: Cover history is unknown — LHC loading has not been applied. This quote may be inaccurate.`);
+  const loadingLines = premium.hospitalRows.map((row) => React.createElement("div", { className: "price-line" }, React.createElement("span", null, `Applicant ${row.applicant} LHC loading`), React.createElement("strong", null, `${row.loadingPct}%`)));
   return React.createElement(
     "section",
     { className: "price-card" },
@@ -148,6 +149,7 @@ const PriceBreakdown = ({ premium, form }) => {
       PriceLine("Yearly before discount", premium.yearlyBeforeDiscount),
       PriceLine("Yearly after discount", premium.yearlyAfterDiscount)
     ),
+    React.createElement("div", { className: "price-grid" }, ...loadingLines),
     React.createElement("p", { className: "price-note" }, "Lifetime Health Cover loading applies only to hospital cover. It does not apply to extras cover."),
     warnings.length > 0 && React.createElement("p", { className: "warning" }, warnings.join(" ")),
     React.createElement("p", { className: "price-note" }, `Adults counted: ${premium.adultCount}. Annual discount: ${form.annualDiscountPct || 0}% (${form.paymentFrequency === "Yearly" ? "applied" : "not applied"}).`)
@@ -217,7 +219,7 @@ const calculatePremium = (form) => {
     const calculatedAge = getAge(age);
     const history = histories[index] || "";
     const loading = getLhcLoading(calculatedAge, history, form.hospitalCoverLevel);
-    return { applicant: index + 1, history, loading, age: calculatedAge };
+    return { applicant: index + 1, history, loading, loadingPct: loading * 100, age: calculatedAge };
   });
   const hospitalTotal = hospitalRows.reduce((sum, row) => sum + (PRICE_KEYS[form.hospitalCoverLevel] || 0) * (1 + row.loading), 0);
   const extrasTotal = (EXTRA_KEYS[form.extraCoverLevel] || 0) * adultCount;
@@ -234,6 +236,7 @@ const calculatePremium = (form) => {
     monthlyPremium,
     yearlyBeforeDiscount,
     yearlyAfterDiscount,
+    hospitalRows,
     unknownHistoryApplicants: hospitalRows
       .filter((row) => row.history === "Not sure" && form.hospitalCoverLevel !== "None")
       .map((row) => row.applicant)
@@ -309,7 +312,8 @@ const QuoteDetail = ({ quote, loading, error, onBack, onEdit, onDelete }) => {
     DetailRow("Family fee", formatCurrency(premium.familyFee)),
     DetailRow("Monthly premium", formatCurrency(premium.monthlyPremium)),
     DetailRow("Yearly before discount", formatCurrency(premium.yearlyBeforeDiscount)),
-    DetailRow("Yearly after discount", formatCurrency(premium.yearlyAfterDiscount))
+    DetailRow("Yearly after discount", formatCurrency(premium.yearlyAfterDiscount)),
+    ...premium.hospitalRows.map((row) => DetailRow(`LHC loading — Applicant ${row.applicant}`, `${row.loadingPct}%`))
   );
   const warning = premium.unknownHistoryApplicants.length > 0
     ? React.createElement("p", { className: "warning" }, premium.unknownHistoryApplicants.map((applicant) => `Applicant ${applicant}: Cover history is unknown — LHC loading has not been applied. This quote may be inaccurate.`).join(" "))
